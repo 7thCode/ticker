@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="list">
+                <table class="table">
+                    <thead>
+                    <tr style="font-size:1rem;font-weight:700;">
+                        <th style="text-align: center" scope="col">id</th>
+                        <th style="text-align: center" scope="col">close</th>
+                        <th style="text-align: center" scope="col">eventTime</th>
+                        <th style="text-align: center" scope="col">high</th>
+                        <th style="text-align: center" scope="col">low</th>
+                        <th style="text-align: center" scope="col">open</th>
+                        <th style="text-align: center" scope="col">quoteVolume</th>
+                        <th style="text-align: center" scope="col">volume</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr style="font-size:0.8rem;font-weight:100;" v-for="(val, key) in result">
+                        <th scope="row"> {{key}}</th>
+                        <td style="text-align: right">{{val.close}}</td>
+                        <td style="text-align: center">{{new Date(val.eventTime).toLocaleString("ja-JP")}}</td>
+                        <td style="text-align: right">{{val.high}}</td>
+                        <td style="text-align: right">{{val.low}}</td>
+                        <td style="text-align: right">{{val.open}}</td>
+                        <td style="text-align: right">{{val.quoteVolume}}</td>
+                        <td style="text-align: right">{{val.volume}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+
+    var socket = io.connect();
+
+    var list_object = {};
+
+    const list = new Vue({
+        el: '#list',
+        data: {
+            result: null
+        },
+        methods: {}
+    });
+
+    socket.on("from_server", function (data) {
+        Object.keys(data.value).forEach(function (key) {
+            list_object[key] = data.value[key];
+        });
+        list.result = list_object;
+    });
+
+</script>
+</html>
+
